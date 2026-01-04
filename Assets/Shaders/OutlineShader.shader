@@ -109,7 +109,10 @@ Shader "Custom/OutlineShader"
 
             half4 frag (Varyings IN) : SV_Target
             {
-                half4 finalOutlineColor = lerp(_OutlineColor, (_BaseColor - half4(0.9, 0.9, 0.9, 1.0)), _AutoOutlineColor);
+
+                float brightness = dot(_BaseColor.rgb, float3(0.2126, 0.7152, 0.0722));
+                half4 CalculatedOutlineColor = _BaseColor - lerp(half4(-0.5, -0.5, -0.5, 1), half4(1.5, 1.5, 1.5, 1), brightness);
+                half4 finalOutlineColor = lerp(_OutlineColor, CalculatedOutlineColor, _AutoOutlineColor);
                 return finalOutlineColor;
             }
             ENDHLSL
