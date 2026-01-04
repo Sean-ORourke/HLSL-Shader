@@ -1,5 +1,6 @@
 Shader "Custom/OutlineShader"
 {
+    // Properties to show up in the material inspector
     Properties
     {
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
@@ -16,12 +17,12 @@ Shader "Custom/OutlineShader"
 
     SubShader
     {
-        Name "Main Object"
+        Name "MainObject"
         Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
         
+        // First Pass: Render the main object
         Pass
         {
-            // Tags { "LightMode"="UniversalForward" }
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -66,6 +67,7 @@ Shader "Custom/OutlineShader"
             ENDHLSL
         }
         
+        // Second Pass: Render the colored outline
         Pass 
         {
             Name "OutlineVisual"
