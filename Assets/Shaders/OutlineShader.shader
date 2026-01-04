@@ -3,7 +3,7 @@ Shader "Custom/OutlineShader"
     Properties
     {
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
-        
+
         [Toggle] _OutlineExist("Outline Exist?", Float) = 0
         [Toggle] _AutoOutlineColor("Auto Outline Color?", Float) = 0
         
@@ -16,10 +16,12 @@ Shader "Custom/OutlineShader"
 
     SubShader
     {
+        Name "Main Object"
         Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
-
+        
         Pass
         {
+            // Tags { "LightMode"="UniversalForward" }
             HLSLPROGRAM
 
             #pragma vertex vert
@@ -53,11 +55,6 @@ Shader "Custom/OutlineShader"
                 Varyings OUT;
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
                 OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
-
-                // float3 expandedPosition =
-                //     IN.positionOS.xyz + IN.normalOS * _OutlineThickness;
-
-                // OUT.positionHCS = TransformObjectToHClip(expandedPosition);
                 return OUT;
             }
 
@@ -68,14 +65,13 @@ Shader "Custom/OutlineShader"
             }
             ENDHLSL
         }
-
+        
         Pass 
         {
-            Name "Outline"
-            Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" "LightMode"="UniversalForward" }
+            Name "OutlineVisual"
+            Tags { "LightMode"="UniversalForward" }
 
             Cull Front
-            ZWrite Off
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -118,5 +114,6 @@ Shader "Custom/OutlineShader"
             }
             ENDHLSL
         }
+        
     }
 }
