@@ -1,27 +1,24 @@
-Shader "Custom/MonoColorShader"
+Shader "Custom/OutlineShader"
 {
     Properties
     {
-        [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        [Toggle] _AutoOutlineColor("Auto Outline Color?", Float) = 0
 
-        _OutlineColor("Outline Color", Color) = (0, 0, 0, 0.5)
+        _OutlineColor("Outline Color", Color) = (0, 0, 0, 0)
         _OutlineThickness("Outline Thickness", Float) = 0.05
+
+        _BaseMap("Base Map", 2D) = "white"
     }
 
     SubShader
     {
-        
+        Tags { "RenderType" = "Opaque" "RenderPipeline" = "UniversalPipeline" }
 
-        // -----------------------------
-        // MAIN COLOR PASS
-        // -----------------------------
         Pass
         {
-            Name "Main"
-            Tags { "LightMode"="URPDefaultUnlit" 
-            "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
-
             HLSLPROGRAM
+
             #pragma vertex vert
             #pragma fragment frag
 
@@ -30,43 +27,52 @@ Shader "Custom/MonoColorShader"
             struct Attributes
             {
                 float4 positionOS : POSITION;
+                float3 normalOS   : NORMAL;
+                float2 uv : TEXCOORD0;
             };
 
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
             };
+
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _BaseColor;
+                float4 _BaseMap_ST;
             CBUFFER_END
 
-            Varyings vert (Attributes IN)
+            Varyings vert(Attributes IN)
             {
                 Varyings OUT;
                 OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+
+                // float3 expandedPosition =
+                //     IN.positionOS.xyz + IN.normalOS * _OutlineThickness;
+
+                // OUT.positionHCS = TransformObjectToHClip(expandedPosition);
                 return OUT;
             }
 
-            half4 frag (Varyings IN) : SV_Target
+            half4 frag(Varyings IN) : SV_Target
             {
-                return _BaseColor;
+                half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor;
+                return color;
             }
             ENDHLSL
         }
 
-        // -----------------------------
-        // OUTLINE PASS
-        // -----------------------------
-        Pass
+        Pass 
         {
             Name "Outline"
-            // Tags { "LightMode"="SRPDefaultUnlit" }
-            Tags { "RenderType"="Transparent" "RenderPipeline"="UniversalPipeline" }
+            Tags { "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" "LightMode"="UniversalForward" }
 
             Cull Front
             ZWrite Off
-            // ZTest Greater
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -86,8 +92,11 @@ Shader "Custom/MonoColorShader"
             };
 
             CBUFFER_START(UnityPerMaterial)
+                half4 _BaseColor;
+                float4 _BaseMap_ST;
                 float _OutlineThickness;
                 half4 _OutlineColor;
+                float _AutoOutlineColor;
             CBUFFER_END
 
             Varyings vert (Attributes IN)
@@ -103,7 +112,10 @@ Shader "Custom/MonoColorShader"
 
             half4 frag (Varyings IN) : SV_Target
             {
-                return _OutlineColor;
+                half4 outlineColorModifier = half4(0.9, 0.9, 0.9, 1.0);
+                half4 finalOutlineColor = _BaseColor - outlineColorModifier;
+                return finalOutlineColor;
+                // return _OutlineColor;
             }
             ENDHLSL
         }
