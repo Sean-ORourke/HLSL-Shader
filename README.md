@@ -1,2 +1,3 @@
 # HLSL-Shader
-Shader creation in Unity
+
+![Yellow, Green, Red, and Blue Sphere. The Green sphere is outlined.](Outline Shader Thumbnail.png)
