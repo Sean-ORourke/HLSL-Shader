@@ -49,7 +49,7 @@ Shader "Custom/MonoColorShader"
 
             half4 frag(Varyings IN) : SV_Target
             {
-                half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor;
+                half4 color = half4(0.2, 0.4, 0.3, 1);
                 return color;
             }
             ENDHLSL
