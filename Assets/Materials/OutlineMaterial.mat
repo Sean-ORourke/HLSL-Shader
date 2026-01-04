@@ -27,6 +27,7 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _AUTOOUTLINECOLOR_ON
+  - _OUTLINEEXIST_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -122,6 +123,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _OutlineExist: 1
     - _OutlineThickness: 0.1
     - _Parallax: 0.005
     - _QueueOffset: 0
