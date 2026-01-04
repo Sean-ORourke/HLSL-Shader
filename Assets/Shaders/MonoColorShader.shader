@@ -3,72 +3,14 @@ Shader "Custom/MonoColorShader"
     Properties
     {
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
-
-        _OutlineColor("Outline Color", Color) = (0, 0, 0, 0.5)
-        _OutlineThickness("Outline Thickness", Float) = 0.05
     }
 
     SubShader
     {
-        
-
-        // -----------------------------
-        // MAIN COLOR PASS
-        // -----------------------------
         Pass
         {
-            Name "Main"
-            Tags { "LightMode"="URPDefaultUnlit" 
-            "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline" }
-
             HLSLPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
 
-            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-
-            struct Attributes
-            {
-                float4 positionOS : POSITION;
-            };
-
-            struct Varyings
-            {
-                float4 positionHCS : SV_POSITION;
-            };
-
-            CBUFFER_START(UnityPerMaterial)
-                half4 _BaseColor;
-            CBUFFER_END
-
-            Varyings vert (Attributes IN)
-            {
-                Varyings OUT;
-                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
-                return OUT;
-            }
-
-            half4 frag (Varyings IN) : SV_Target
-            {
-                return _BaseColor;
-            }
-            ENDHLSL
-        }
-
-        // -----------------------------
-        // OUTLINE PASS
-        // -----------------------------
-        Pass
-        {
-            Name "Outline"
-            // Tags { "LightMode"="SRPDefaultUnlit" }
-            Tags { "RenderType"="Transparent" "RenderPipeline"="UniversalPipeline" }
-
-            Cull Front
-            ZWrite Off
-            // ZTest Greater
-
-            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
@@ -78,32 +20,34 @@ Shader "Custom/MonoColorShader"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
+                float2 uv : TEXCOORD0;
             };
 
             struct Varyings
             {
                 float4 positionHCS : SV_POSITION;
+                float2 uv : TEXCOORD0;
             };
 
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
+
             CBUFFER_START(UnityPerMaterial)
-                float _OutlineThickness;
-                half4 _OutlineColor;
+                half4 _BaseColor;
+                float4 _BaseMap_ST;
             CBUFFER_END
 
-            Varyings vert (Attributes IN)
+            Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-
-                float3 expandedPosition =
-                    IN.positionOS.xyz + IN.normalOS * _OutlineThickness;
-
-                OUT.positionHCS = TransformObjectToHClip(expandedPosition);
+                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
                 return OUT;
             }
 
-            half4 frag (Varyings IN) : SV_Target
+            half4 frag(Varyings IN) : SV_Target
             {
-                return _OutlineColor;
+                return _BaseColor;
             }
             ENDHLSL
         }

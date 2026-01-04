@@ -112,10 +112,14 @@ Shader "Custom/OutlineShader"
 
             half4 frag (Varyings IN) : SV_Target
             {
-                half4 outlineColorModifier = half4(0.9, 0.9, 0.9, 1.0);
-                half4 finalOutlineColor = _BaseColor - outlineColorModifier;
-                return finalOutlineColor;
-                // return _OutlineColor;
+                if (_AutoOutlineColor > 0.5)
+                {
+                    half4 outlineColorModifier = half4(0.9, 0.9, 0.9, 1.0);
+                    half4 finalOutlineColor = _BaseColor - outlineColorModifier;
+                    return finalOutlineColor;
+                }
+                
+                return _OutlineColor;
             }
             ENDHLSL
         }
