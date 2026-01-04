@@ -3,7 +3,10 @@ Shader "Custom/OutlineShader"
     Properties
     {
         _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        
+        [Toggle] _OutlineExist("Outline Exist?", Float) = 0
         [Toggle] _AutoOutlineColor("Auto Outline Color?", Float) = 0
+        
 
         _OutlineColor("Outline Color", Color) = (0, 0, 0, 0)
         _OutlineThickness("Outline Thickness", Float) = 0.05
@@ -97,16 +100,14 @@ Shader "Custom/OutlineShader"
                 float _OutlineThickness;
                 half4 _OutlineColor;
                 float _AutoOutlineColor;
+                float _OutlineExist;
             CBUFFER_END
 
             Varyings vert (Attributes IN)
             {
                 Varyings OUT;
-
-                float3 expandedPosition =
-                    IN.positionOS.xyz + IN.normalOS * _OutlineThickness;
-
-                OUT.positionHCS = TransformObjectToHClip(expandedPosition);
+                float3 expandedPosition = IN.positionOS.xyz + IN.normalOS * _OutlineThickness;
+                OUT.positionHCS = lerp(TransformObjectToHClip(IN.positionOS.xyz), TransformObjectToHClip(expandedPosition), _OutlineExist);
                 return OUT;
             }
 
