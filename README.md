@@ -1,10 +1,11 @@
 # Outline Shader
-## HLSL Shader Creation in Unity URP
 
+## HLSL Shader Creation in Unity URP
 ![Yellow, Green, Red, and Blue Sphere. The Green sphere is outlined.](./ReadMeImages/Outline_Shader_Thumbnail.png)
 
 I created an outline shader with HLSL as a learning project. I became familiar with basic HLSL and ShaderLab syntax for Unity's Universal Rendering Pipeline.
 
+## Editor Adjustable Attributes
 ![Image with Material Attributes.](./ReadMeImages/Editable_Attributes.png)
 
 My outline shader has several adjustable attributes which can be changed in the material editor. 
@@ -18,6 +19,7 @@ Additionally, the user of the material can adjust the base color, select a textu
 ## In Progress and Future Directions
 
 ![Unity editor showing the shader in an earlier state, without toggles.](./ReadMeImages/In_Progress_Photo.png)
+
 My goal for this project was to learn the fundamentals of HLSL and ShaderLab code. I now feel I have a solid understanding of variable declaration, syntax, and some conventions.
 
 
