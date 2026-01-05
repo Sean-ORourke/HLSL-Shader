@@ -3,14 +3,14 @@ Shader "Custom/OutlineShader"
     // Properties to show up in the material inspector
     Properties
     {
-        _BaseColor("Base Color", Color) = (1, 1, 1, 1)
+        _BaseColor("Base Color", Color) = (0.1, 0.9, 0.1, 1)
 
-        [Toggle] _OutlineExist("Outline Exist?", Float) = 0
-        [Toggle] _AutoOutlineColor("Auto Outline Color?", Float) = 0
+        [Toggle] _OutlineExist("Outline Exist?", Float) = 1
+        [Toggle] _AutoOutlineColor("Auto Outline Color?", Float) = 1
         
 
         _OutlineColor("Outline Color", Color) = (0, 0, 0, 0)
-        _OutlineThickness("Outline Thickness", Float) = 0.05
+        _OutlineThickness("Outline Thickness", Float) = 0.1
 
         _BaseMap("Base Map", 2D) = "white"
     }
